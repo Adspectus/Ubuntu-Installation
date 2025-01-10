@@ -8,9 +8,9 @@ Since Ubuntu Server 20.04 and Ubuntu Desktop 23.04 it is possible to create an o
 
 Compared to some other methods, I've found the procedure suggested by [maka00/ubuntu2404-autoinstall: create an autoinstall iso for Ubuntu 24.04](https://github.com/maka00/ubuntu2404-autoinstall) the easiest and fastest *working* instruction around.
 
-On the other hand, I found the usage of the `task` tool and the generation of the `autoinstall.yaml` file by means of a template and a `python` script a bit over-engineered.
+On the other hand, I think the usage of the `task` tool and the generation of the `autoinstall.yaml` file by means of a template and a `python` script is a bit over-engineered.
 
-Hence, I stripped down the recipe to the basic instructions but admittedly I would never have thought of the details of the `xorriso` program by myself.
+Hence, I stripped down the recipe to the basic instructions but admittedly, I would never have thought of the details of the `xorriso` program by myself.
 
 So the credits go solely to him.
 
@@ -24,24 +24,27 @@ And of course you will need the original ISO image from Ubuntu.
 
 ## Step-by-step guide
 
-1. Download the ISO image from Ubuntu, i.e. ubuntu-24.04.1-desktop-amd64.iso and save it in a temporary working directory, i.e. in `$HOME/Temp/`.
+1. Clone this repo and use it as a working directory or create a distinct working directory somewhere else (in this case copy the file `torito.sh` to this directory). Either one will be refered as WORKDIR in the following steps.
 
-2. CWD to that directory and extract the ISO image into a a subdirectory, i.e. into `$HOME/Temp/ubuntu-24.04.1-desktop-amd64/`:
+2. Download the ISO image from Ubuntu, i.e. ubuntu-24.04.1-desktop-amd64.iso and save it in the working directory.
 
-   `cd $HOME/Temp/ && 7z -y x ubuntu-24.04.1-desktop-amd64.iso -oubuntu-24.04.1-desktop-amd64`
+2. CWD to that directory and extract the ISO image into a a subdirectory, i.e. into `WORKDIR/ubuntu-24.04.1-desktop-amd64/`:
 
-3. Save your `autoinstall.yaml` in this directory (`$HOME/Temp/ubuntu-24.04.1-desktop-amd64/`).
+   `7z -y x ubuntu-24.04.1-desktop-amd64.iso -oubuntu-24.04.1-desktop-amd64`
 
-4. Move the extracted `[BOOT]` subdirectory as `BOOT` into the temporary working directory:
+3. Save your `autoinstall.yaml` in this directory, i.e. in `WORKDIR/ubuntu-24.04.1-desktop-amd64/`.
+
+4. Move the extracted `[BOOT]` subdirectory as `BOOT` into the working directory:
 
    `mv ubuntu-24.04.1-desktop-amd64/\[BOOT\] BOOT`
 
-   The tree beneath the tempory working directory `$HOME/Temp/` should look like this now:
+   The tree under the root of the working directory should look like this now:
 
    ```
    ├── BOOT
    │   ├── 1-Boot-NoEmul.img
    │   └── 2-Boot-NoEmul.img
+   ├── torito.sh
    ├── ubuntu-24.04.1-desktop-amd64
    │   ├── autoinstall.yaml
    │   ├── boot
@@ -56,7 +59,7 @@ And of course you will need the original ISO image from Ubuntu.
    └── ubuntu-24.04.1-desktop-amd64.iso
    ```
 
-5. Edit the file `$HOME/Temp/ubuntu-24.04.1-desktop-amd64/boot/grub/grub.cfg`and add an additional `menuentry` section on top the other sections like this:
+5. Edit the file `WORKDIR/ubuntu-24.04.1-desktop-amd64/boot/grub/grub.cfg`and add an additional `menuentry` section on top the other sections like this:
 
    ```
    menuentry "AutoInstall Custom Ubuntu" {
