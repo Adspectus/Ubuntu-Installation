@@ -1,0 +1,4 @@
+BOOT
+*.iso
+torito.sh
+ubuntu-*/
