@@ -115,6 +115,40 @@ And of course you will need the original ISO image from Ubuntu.
 
 10. Then, you can create a custom USB installation stick with `ubuntu-24.04.1-custom-desktop-amd64.iso`.
 
+## Testing
+
+It is possible to test the resulting ISO image by using it for creation of a virtual machine, i.e. with QEMU/KVM:
+
+Instead of creating a USB stick, create a new virtual disk image with 
+
+`qemu-img create -f raw ubuntu-24.04.1-custom-desktop-amd64.img 100G`
+
+and then start qemu with:
+
+```sh
+qemu-system-x86_64 -daemonize -enable-kvm \
+  -name "Custom Ubuntu 24.04" \
+  -cpu host -smp 4 -m 16384 \
+  -drive file=ubuntu-24.04.1-custom-desktop-amd64.img,format=raw \
+  -cdrom ubuntu-24.04.1-custom-desktop-amd64.iso -boot d
+```
+
+This can be done with the script [createQEMU.sh](createQEMU.sh).
+
+If you would like to use the virtual machine not only for testing the installation, run it with:
+
+```sh
+qemu-system-x86_64 -daemonize -enable-kvm \
+  -name "Custom Ubuntu 24.04" \
+  -cpu host -smp 4 -m 16384 \
+  -drive file=ubuntu-24.04.1-custom-desktop-amd64.img,format=raw \
+  -nic user,hostfwd=::2222-:22
+```
+
+This can be done with the script [runQEMU.sh](runQEMU.sh).
+
+The difference is, that instead of the attachment of the ISO image as CDROM drive to boot from, a port forwarding is implemented from the guest's port 22 (ssh) to the host's port 2222, in order to connect from the host to the guest via ssh (`ssh -p 2222 localhost`).
+
 ## Acknowledgements
 
 - [maka00/ubuntu2404-autoinstall: create an autoinstall iso for Ubuntu 24.04](https://github.com/maka00/ubuntu2404-autoinstall)
