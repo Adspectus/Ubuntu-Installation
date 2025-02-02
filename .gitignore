@@ -1,5 +1,4 @@
 BOOT
 *.img
 *.iso
-torito.sh
 ubuntu-*/
